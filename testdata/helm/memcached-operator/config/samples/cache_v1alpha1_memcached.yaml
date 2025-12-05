@@ -8,7 +8,7 @@ spec:
   affinity: {}
   extraContainers: ""
   extraVolumes: ""
-  image: memcached:1.5.20
+  image: docker.io/library/memcached:1.5.20
   kind: StatefulSet
   memcached:
     extendedOptions: modern

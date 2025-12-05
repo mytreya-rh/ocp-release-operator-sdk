@@ -12,7 +12,7 @@ jobs:
     outputs:
       skip: ${{ steps.check_docs_only.outputs.skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - id: check_docs_only
@@ -29,7 +29,7 @@ jobs:
     needs: check_docs_only
     if: needs.check_docs_only.outputs.skip != 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -37,7 +37,7 @@ jobs:
         run: |
           .github/workflows/clean-unused-disk-space.sh
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
       - run: sudo rm -rf /usr/local/bin/kustomize
@@ -49,7 +49,7 @@ jobs:
     needs: check_docs_only
     if: needs.check_docs_only.outputs.skip != 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -57,7 +57,7 @@ jobs:
         run: |
           .github/workflows/clean-unused-disk-space.sh
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: "go.mod"
       - run: make test-unit
