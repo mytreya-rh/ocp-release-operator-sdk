@@ -9,6 +9,12 @@ resources:
 - role_binding.yaml
 - leader_election_role.yaml
 - leader_election_role_binding.yaml
+# Downstream-only (OpenShift): grants read access to the cluster's
+# centralized TLS security profile. Kept as a separate ClusterRole/Binding
+# (see internal/helm/openshifttls) instead of being inlined into role.yaml
+# so it never has to touch that upstream-scaffolded file.
+- openshift_tls_profile_role.yaml
+- openshift_tls_profile_role_binding.yaml
 # The following RBAC configurations are used to protect
 # the metrics endpoint with authn/authz. These configurations
 # ensure that only authorized users and service accounts

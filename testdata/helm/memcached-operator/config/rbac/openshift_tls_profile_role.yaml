@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: memcached-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: openshift-tls-profile-reader-role
+rules:
+# Downstream-only (OpenShift): read the cluster's centralized TLS security
+# profile (apiservers.config.openshift.io/cluster) so the metrics server can
+# honor it. Non-OpenShift clusters simply won't have this API and the watch
+# will never trigger (see internal/helm/openshifttls).
+#
+# Kept in a dedicated ClusterRole/ClusterRoleBinding (rather than inlined
+# into manager-role in role.yaml) so this permission never has to touch the
+# upstream-scaffolded role.yaml or manager_role.go, keeping future
+# "Merge upstream tag" rebases conflict-free for this change.
+- apiGroups:
+  - config.openshift.io
+  resources:
+  - apiservers
+  verbs:
+  - get
+  - list
+  - watch

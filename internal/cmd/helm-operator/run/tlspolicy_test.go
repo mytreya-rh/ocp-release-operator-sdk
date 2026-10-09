@@ -38,7 +38,7 @@ func (s *stubTLSPolicy) Apply(_ context.Context, _ *rest.Config, options manager
 	return options, s.applyErr
 }
 
-func (s *stubTLSPolicy) Watch(_ context.Context, _ manager.Manager, _ context.CancelFunc) error {
+func (s *stubTLSPolicy) WatchIfProfileAvailable(_ context.Context, _ manager.Manager, _ context.CancelFunc) error {
 	s.watchCalled = true
 	return s.watchErr
 }
@@ -69,14 +69,16 @@ func TestRegisterClusterTLSPolicy(t *testing.T) {
 	assert.Same(t, ClusterTLSPolicy(policy), registeredTLSPolicy)
 }
 
-func TestRegisterClusterTLSPolicy_Overwrites(t *testing.T) {
+func TestRegisterClusterTLSPolicy_PanicsOnSecondRegistration(t *testing.T) {
 	first := &stubTLSPolicy{}
 	withRegisteredTLSPolicy(t, first)
 
 	second := &stubTLSPolicy{}
-	RegisterClusterTLSPolicy(second)
-
-	assert.Same(t, ClusterTLSPolicy(second), registeredTLSPolicy)
+	assert.PanicsWithValue(t,
+		"ClusterTLSPolicy already registered; only one implementation may be registered",
+		func() { RegisterClusterTLSPolicy(second) },
+	)
+	assert.Same(t, ClusterTLSPolicy(first), registeredTLSPolicy, "the original registration must be left untouched after a rejected second attempt")
 }
 
 func TestClusterTLSPolicy_ApplyFailsOpen(t *testing.T) {

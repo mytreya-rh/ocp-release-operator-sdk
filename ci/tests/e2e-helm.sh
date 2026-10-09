@@ -149,7 +149,7 @@ deploy_operator() {
 
     # deploy operator
     echo "running make deploy"
-    make deploy IMG=$IMAGE
+    make deploy "IMG=$IMAGE"
 
     # wait for operator pod to run
     if ! timeout 1m kubectl rollout status deployment/memcached-operator-controller-manager -n memcached-operator-system;
@@ -168,7 +168,7 @@ deploy_operator() {
 }
 
 # use sample in testdata
-pushd $ROOTDIR/testdata/helm/memcached-operator
+pushd "$ROOTDIR/testdata/helm/memcached-operator"
 ls
 
 deploy_operator
